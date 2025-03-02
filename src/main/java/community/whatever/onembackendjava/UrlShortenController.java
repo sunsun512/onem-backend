@@ -2,6 +2,7 @@ package community.whatever.onembackendjava;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,22 +20,31 @@ public class UrlShortenController {
     private final Map<String, String> shortenUrls = new HashMap<>();
 
     @GetMapping("/shorten-url/search")
-    public String shortenUrlSearch(@RequestBody String key) {
+    public String shortenUrlSearch(@Valid String key) {
         log.info("search key >> {}", key);
         if (!shortenUrls.containsKey(key)) {
             throw new IllegalArgumentException("Invalid key");
         }
         String originUrl = shortenUrls.get(key);
-        log.info("originUrl >> {}", originUrl);
+        log.info("return originUrl >> {}", originUrl);
         return originUrl;
     }
 
     @PostMapping("/shorten-url/create")
-    public String shortenUrlCreate( @Valid String originUrl) {
-        log.info("create url >> {}", originUrl);
-        String randomKey = String.valueOf(new Random().nextInt(10000));
+    public String shortenUrlCreate( @RequestBody String originUrl) {
+        log.info("create originUrl >> {}", originUrl);
+        if (!StringUtils.hasText(originUrl)) {
+            throw new IllegalArgumentException("Request URL No exists ");
+        }
+        String randomKey;
+        while(true){
+            randomKey = String.valueOf(new Random().nextInt(10000000));
+            if (shortenUrls.get(randomKey) == null){
+                break;
+            }
+        }
         shortenUrls.put(randomKey, originUrl);
-        log.info("randomKey >> {}", randomKey);
+        log.info("return randomKey >> {}", randomKey);
         return randomKey;
     }
 }
