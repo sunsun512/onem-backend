@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UrlShortenController {
     private final UrlShortenService urlShortenService;
 
-    @GetMapping("/shorten-url/search")
+    @GetMapping("/shorten-url")
     public String shortenUrlSearch(@Valid String key) {
         log.info("search key >> {}", key);
         String result = urlShortenService.shortenUrlSearch(key);
@@ -25,7 +25,7 @@ public class UrlShortenController {
         return result;
     }
 
-    @PostMapping("/shorten-url/create")
+    @PostMapping("/shorten-url")
     public String shortenUrlCreate( @RequestBody String originUrl) {
         log.info("create originUrl >> {}", originUrl);
         String result = urlShortenService.shortenUrlCreate(originUrl);
