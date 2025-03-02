@@ -25,13 +25,10 @@ public class UrlShortenService {
         if (!StringUtils.hasText(originUrl)) {
             throw new IllegalArgumentException("Request URL No exists ");
         }
-        String randomKey;
-        while(true){
-            randomKey = String.valueOf(new Random().nextInt(10000000));
-            if (shortenUrls.putIfAbsent(randomKey, originUrl ) == null){
-                break;
-            }
-        }
-        return randomKey;
+        Random random = new Random();
+        return Stream.generate(() -> String.valueOf(random.nextInt(10000000)))
+                .filter(key -> shortenUrls.putIfAbsent(key, originUrl) == null)
+                .findFirst()
+                .orElseThrow();
     }
 }
