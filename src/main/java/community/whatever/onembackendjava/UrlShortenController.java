@@ -37,9 +37,12 @@ public class UrlShortenController {
             throw new IllegalArgumentException("Request URL No exists ");
         }
         String randomKey;
-        do {
+        while(true){
             randomKey = String.valueOf(new Random().nextInt(10000000));
-        } while (shortenUrls.putIfAbsent(randomKey, originUrl) != null);
+            if (shortenUrls.putIfAbsent(randomKey, originUrl ) == null){
+                break;
+            }
+        }
         log.info("return randomKey >> {}", randomKey);
         return randomKey;
     }
