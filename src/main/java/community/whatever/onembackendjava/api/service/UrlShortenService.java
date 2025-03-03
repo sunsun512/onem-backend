@@ -1,5 +1,6 @@
-package community.whatever.onembackendjava.service;
+package community.whatever.onembackendjava.api.service;
 
+import community.whatever.onembackendjava.common.error.BusinessExceptionGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -30,6 +31,6 @@ public class UrlShortenService {
         return Stream.generate(() -> String.valueOf(random.nextInt(10000000)))
                 .filter(key -> shortenUrls.putIfAbsent(key, originUrl) == null)
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> BusinessExceptionGenerator.createBusinessException("Service Error"));
     }
 }
