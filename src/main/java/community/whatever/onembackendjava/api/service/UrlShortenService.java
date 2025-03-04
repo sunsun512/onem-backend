@@ -1,5 +1,6 @@
 package community.whatever.onembackendjava.api.service;
 
+import community.whatever.onembackendjava.common.error.BusinessException;
 import community.whatever.onembackendjava.common.error.BusinessExceptionGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,19 +19,21 @@ public class UrlShortenService {
 
     public String shortenUrlSearch(String key){
         if (!shortenUrls.containsKey(key)) {
-            throw new IllegalArgumentException("Invalid key");
+            throw BusinessExceptionGenerator.createBusinessException("DB001", "Invalid key");
         }
         return shortenUrls.get(key);
     }
 
     public String shortenUrlCreate(String originUrl){
+        //@todo url validation 필요
         if (!StringUtils.hasText(originUrl)) {
-            throw new IllegalArgumentException("Request URL No exists ");
+            throw BusinessExceptionGenerator.createBusinessException("DB001", "Request URL No exists ");
         }
         Random random = new Random();
         return Stream.generate(() -> String.valueOf(random.nextInt(10000000)))
                 .filter(key -> shortenUrls.putIfAbsent(key, originUrl) == null)
                 .findFirst()
-                .orElseThrow(() -> BusinessExceptionGenerator.createBusinessException("Service Error"));
+                //@Todo 키가 없을 경우 에러 생성되게 수정 필요
+                .orElseThrow();
     }
 }

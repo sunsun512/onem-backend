@@ -1,5 +1,6 @@
 package community.whatever.onembackendjava.common.error;
 
+import community.whatever.onembackendjava.common.error.model.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -15,17 +16,20 @@ public class BusinessExceptionGenerator {
         this.restControllerAdvice = restControllerAdvice;
     }
 
-    public static BusinessException createBusinessException(String message) {
-        return new BusinessException(message);
+    public static BusinessException createBusinessException(String errorCode) {
+        ErrorCode enumError = ErrorCode.valueOf(errorCode);
+        return new BusinessException(enumError.getErrorCode(), enumError.getMessage());
     }
 
-    public static BusinessException createBusinessException(String message, HttpStatus status) {
+    public static BusinessException createBusinessException(String errorCode, String message, HttpStatus status) {
+        ErrorCode enumError = ErrorCode.valueOf(errorCode);
 
-        return new BusinessException(message, status);
+        return new BusinessException(enumError.getErrorCode(), message, status);
     }
 
-    public static BusinessException createBusinessException(String message, Exception ex) {
+    public static BusinessException createBusinessException(String errorCode, String message) {
+        ErrorCode enumError = ErrorCode.valueOf(errorCode);
 
-        return new BusinessException(message, ((ex!=null) ? restControllerAdvice.extractExceptionDetails(ex) : null));
+        return new BusinessException(enumError.getErrorCode(), message, null);
     }
 }

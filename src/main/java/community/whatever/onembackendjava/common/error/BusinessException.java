@@ -9,7 +9,7 @@ import java.util.HashMap;
 @Getter
 @Setter
 public class BusinessException extends RuntimeException {
-
+    private String errorCode;
     private String message;
     private HttpStatus httpStatus;
     private HashMap<String, Object> data;
@@ -18,7 +18,12 @@ public class BusinessException extends RuntimeException {
         super();
     }
 
-    public BusinessException(String message) {
+    public BusinessException(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public BusinessException(String errorCode, String message) {
+        this.errorCode = errorCode;
         this.message = message;
     }
 
@@ -28,7 +33,8 @@ public class BusinessException extends RuntimeException {
         this.data = data;
     }
 
-    public BusinessException( String message, HttpStatus httpStatus) {
+    public BusinessException(String errorCode, String message, HttpStatus httpStatus) {
+        this.errorCode = errorCode;
         this.message = message;
         this.httpStatus = httpStatus;
     }

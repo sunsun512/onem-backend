@@ -2,6 +2,7 @@ package community.whatever.onembackendjava.common.error;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import community.whatever.onembackendjava.common.util.model.ResultJson;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -45,5 +46,19 @@ HashMap<String, Object> extractExceptionDetails(Exception ex) {
     }
     return new HashMap<>();
 }
+
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity<ResultJson> BdExceptionHandler(BusinessException ex) {
+
+        return ResponseEntity
+                .status((ex.getHttpStatus() !=null) ? ex.getHttpStatus() : HttpStatus.OK)
+                .body(ResultJson.builder()
+                        .resultCode(ex.getErrorCode())
+                        .msg(ex.getMessage())
+                        .data(ex.getData())
+                        .build());
+    }
 
 }
