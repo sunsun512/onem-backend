@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 
-public class UrlShortenUtil {
+public class ResponseFormatter {
 
     public static ResponseEntity<ResultJson> ConvertResponse() {
         return ResponseEntity.ok(ResultJson.builder().build());

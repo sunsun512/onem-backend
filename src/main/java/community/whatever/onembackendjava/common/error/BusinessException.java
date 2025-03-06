@@ -39,5 +39,4 @@ public class BusinessException extends RuntimeException {
         this.httpStatus = httpStatus;
     }
 
-
 }

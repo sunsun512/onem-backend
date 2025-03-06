@@ -19,7 +19,7 @@ public class UrlShortenService {
 
     public String shortenUrlSearch(String key){
         if (!shortenUrls.containsKey(key)) {
-            throw BusinessExceptionGenerator.createBusinessException("DB001", "Invalid key");
+            throw BusinessExceptionGenerator.createBusinessException("DB001");
         }
         return shortenUrls.get(key);
     }
@@ -27,7 +27,7 @@ public class UrlShortenService {
     public String shortenUrlCreate(String originUrl){
         //@todo url validation 필요
         if (!StringUtils.hasText(originUrl)) {
-            throw BusinessExceptionGenerator.createBusinessException("DB001", "Request URL No exists ");
+            throw BusinessExceptionGenerator.createBusinessException("DB001");
         }
         Random random = new Random();
         return Stream.generate(() -> String.valueOf(random.nextInt(10000000)))
