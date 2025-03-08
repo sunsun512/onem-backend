@@ -3,11 +3,13 @@ package community.whatever.onembackendjava.api.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 public class ShortenUrlDto {
 
     public static class Get{
         @Getter
+        @Setter
         public static class Request{
             private String key;
 

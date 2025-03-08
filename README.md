@@ -62,5 +62,5 @@ internal-core 팀은 전사 공통 util 서비스를 제공하고 있으며, 당
 
     ```shell
     curl -X GET --location "http://localhost:8080/shorten-url?key=4888333" \
-        -H "Content-Type: application/json"
+        -H "Accept: application/json"
     ```

@@ -25,8 +25,9 @@ public class UrlShortenService {
 
     public ShortenUrlDto.Get.Response shortenUrlSearch(ShortenUrlDto.Get.Request param){
         if (!shortenUrls.containsKey(param.getKey())) {
-            throw BusinessExceptionGenerator.createBusinessException("DB001");
+            throw BusinessExceptionGenerator.createBusinessException("DB003");
         }
+
         return ShortenUrlDto.Get.Response.builder()
                 .originUrl(shortenUrls.get(param.getKey()))
                 .build();
