@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -20,6 +17,7 @@ import java.util.stream.Stream;
 public class UrlShortenService {
 
     private static final String UrlRegex = "https?://(?:www\\.)?[a-zA-Z0-9./]+";
+    private static final Pattern URL_PATTERN = Pattern.compile(UrlRegex);
 
     private final Map<String, String> shortenUrls = new HashMap<>();
 
@@ -34,15 +32,16 @@ public class UrlShortenService {
     }
 
     public ShortenUrlDto.Create.Response shortenUrlCreate(ShortenUrlDto.Create.Request param){
-        if ( !StringUtils.hasText(param.getOriginUrl()) || !isValidURL(param.getOriginUrl()) ) {
+        if (validateOriginUrl(param.getOriginUrl())) {
             throw BusinessExceptionGenerator.createBusinessException("DB001");
         }
 
         Random random = new Random();
         String returnKey = Stream.generate(() -> String.valueOf(random.nextInt(10000000)))
-                .limit(5)
-                .filter(key -> shortenUrls.putIfAbsent(key, param.getOriginUrl()) == null)
+                .limit(1)
                 .parallel()
+                .map(key -> shortenUrls.computeIfAbsent(key, k -> param.getOriginUrl()))
+                .filter(Objects::nonNull)
                 .findAny()
                 .orElse(null);
 
@@ -54,8 +53,13 @@ public class UrlShortenService {
     }
 
     public static boolean isValidURL(String url) {
-        Pattern pattern = Pattern.compile(UrlRegex);
-        Matcher matcher = pattern.matcher(url);
+        Matcher matcher = URL_PATTERN.matcher(url);
         return matcher.matches();
     }
+
+    private boolean validateOriginUrl(String originUrl) {
+        return !StringUtils.hasText(originUrl) || !isValidURL(originUrl);
+    }
+
+
 }
