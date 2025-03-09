@@ -43,5 +43,5 @@ include::{snippets}/{create_key}/http-response.adoc[]
 .Request Body
 include::{snippets}/{create_key}/request-body.adoc[]
 
-.Response Body
-include::{snippets}/{create_key}/response-body.adoc[]
+.Response Fields
+include::{snippets}/{create_key}/response-fields.adoc[]
