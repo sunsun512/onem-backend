@@ -37,15 +37,12 @@ public class UrlShortenService {
         }
 
         Random random = new Random();
-        String returnKey = Stream.generate(() -> String.valueOf(random.nextInt(10000000)))
-                .limit(1)
-                .parallel()
-                .map(key -> shortenUrls.computeIfAbsent(key, k -> param.getOriginUrl()))
-                .filter(Objects::nonNull)
-                .findAny()
-                .orElse(null);
+        String returnKey = String.valueOf(random.nextInt(10000000));
 
-        if (!StringUtils.hasText(returnKey)) throw BusinessExceptionGenerator.createBusinessException("DB003");
+        while (shortenUrls.containsKey(returnKey)) { // 이미 존재하는 키면 다시 생성
+            returnKey = String.valueOf(random.nextInt(10000000));
+        }
+        shortenUrls.put(returnKey, param.getOriginUrl()); // 새로운 키를 저장
 
         return ShortenUrlDto.Create.Response.builder()
                 .key(returnKey)
