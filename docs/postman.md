@@ -5,5 +5,6 @@ https://www.postman.com/downloads/
 
 - 좌측 NEW 옆에 IMPORT 클릭 → 파일 방식 → Continue
 
-
+- 각 API 별로 key 값과 originUrl 값을 변경해서 테스트 해주세요.  
+![img.png](img.png)
 
