@@ -1,7 +1,6 @@
 package community.whatever.onembackendjava.api.service;
 
 import community.whatever.onembackendjava.api.dto.ShortenUrlDto;
-import community.whatever.onembackendjava.common.error.BusinessException;
 import community.whatever.onembackendjava.common.error.BusinessExceptionGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +10,6 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
