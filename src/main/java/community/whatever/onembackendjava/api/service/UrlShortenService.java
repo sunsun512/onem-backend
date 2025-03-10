@@ -4,6 +4,7 @@ import community.whatever.onembackendjava.api.dto.ShortenUrlDto;
 import community.whatever.onembackendjava.common.error.BusinessException;
 import community.whatever.onembackendjava.common.error.BusinessExceptionGenerator;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -15,6 +16,9 @@ import java.util.stream.Stream;
 @Slf4j
 @Service
 public class UrlShortenService {
+
+    @Value("#{'${blacklist.domains}'.split(',')}")
+    private List<String> blockedDomains;
 
     private static final String UrlRegex = "https?://(?:www\\.)?[a-zA-Z0-9./]+";
     private static final Pattern URL_PATTERN = Pattern.compile(UrlRegex);
@@ -35,6 +39,9 @@ public class UrlShortenService {
         if (validateOriginUrl(param.getOriginUrl())) {
             throw BusinessExceptionGenerator.createBusinessException("DB001");
         }
+        if(isBlocked(param.getOriginUrl())){
+            throw BusinessExceptionGenerator.createBusinessException("");
+        }
 
         Random random = new Random();
         String returnKey = String.valueOf(random.nextInt(10000000));
@@ -52,6 +59,15 @@ public class UrlShortenService {
     public static boolean isValidURL(String url) {
         Matcher matcher = URL_PATTERN.matcher(url);
         return matcher.matches();
+    }
+
+    public boolean isBlocked(String url) {
+        for (String domain : blockedDomains) {
+            if (url.contains(domain)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean validateOriginUrl(String originUrl) {
