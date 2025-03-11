@@ -1,3 +1,0 @@
-spring:
-  blacklist:
-    domains: "example.com,spam.com,malware.com"
