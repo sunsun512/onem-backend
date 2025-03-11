@@ -2,6 +2,8 @@ package community.whatever.onembackendjava.api.service;
 
 import community.whatever.onembackendjava.api.dto.ShortenUrlDto;
 import community.whatever.onembackendjava.common.error.BusinessExceptionGenerator;
+import community.whatever.onembackendjava.common.util.BlackListService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,11 +15,10 @@ import java.util.regex.Pattern;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UrlShortenService {
 
-    @Value("#{'${blacklist.domains}'.split(',')}")
-    private List<String> blockedDomains;
-
+    private final BlackListService blackListService;
     private static final String UrlRegex = "https?://(?:www\\.)?[a-zA-Z0-9./]+";
     private static final Pattern URL_PATTERN = Pattern.compile(UrlRegex);
 
@@ -38,7 +39,7 @@ public class UrlShortenService {
             throw BusinessExceptionGenerator.createBusinessException("DB001");
         }
         if(isBlocked(param.getOriginUrl())){
-            throw BusinessExceptionGenerator.createBusinessException("");
+            throw BusinessExceptionGenerator.createBusinessException("DB004");
         }
 
         Random random = new Random();
@@ -60,7 +61,7 @@ public class UrlShortenService {
     }
 
     public boolean isBlocked(String url) {
-        for (String domain : blockedDomains) {
+        for (String domain : blackListService.getBlockedDomains()) {
             if (url.contains(domain)) {
                 return true;
             }
