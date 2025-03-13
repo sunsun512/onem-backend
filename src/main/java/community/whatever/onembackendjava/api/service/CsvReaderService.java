@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,25 +19,22 @@ import java.util.Set;
 @Service
 public class CsvReaderService implements BlockedDomainInterface {
 
-    private Set<String> blockedDomains = new HashSet<>();
+    private final Set<String> blockedDomains = new HashSet<>();
 
     // CSV 파일을 읽어 BlockedDomains 리스트에 저장
     public void loadBlockedDomains(MultipartFile file) {
         if (file.isEmpty()) throw BusinessExceptionGenerator.createBusinessException(ErrorCode.DB001);
 
-        Set<String> domainSet = new HashSet<>();
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
 
             String line;
             while ((line = br.readLine()) != null) {
-                domainSet.add(line.trim());
+                blockedDomains.add(line.trim());
             }
         } catch (Exception e) {
             throw BusinessExceptionGenerator.createBusinessException("RU001", e.getMessage());
         }
-
-        this.blockedDomains = domainSet; // 새로운 데이터로 업데이트
     }
 
     // 차단된 도메인 목록 반환
