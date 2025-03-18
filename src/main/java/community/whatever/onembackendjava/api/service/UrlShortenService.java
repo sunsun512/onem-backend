@@ -70,9 +70,9 @@ public class UrlShortenService {
     }
 
     /*
-     *  1시간마다 만료된 URL 삭제
+     *  30분마다 만료된 URL 삭제
      */
-    @Scheduled(fixedRate = 3600000)
+    @Scheduled(fixedRate = 1800000)
     private void startCleanupTask() {
         LocalDateTime now = LocalDateTime.now();
         shortenUrls.entrySet().removeIf(entry -> entry.getValue().isExpired());
