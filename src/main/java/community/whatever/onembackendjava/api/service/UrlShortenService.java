@@ -52,7 +52,7 @@ public class UrlShortenService {
             returnKey = String.valueOf(random.nextInt(10000000));
         }
 
-        LocalDateTime expiryTime = LocalDateTime.now().plusSeconds(param.getTtlInSeconds());
+        LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(param.getExpirationMin());
         shortenUrls.put(returnKey, new ExpiringUrl(param.getOriginUrl(), expiryTime)); // 새로운 키를 저장
 
         return ShortenUrlDto.Create.Response.builder()
@@ -72,7 +72,7 @@ public class UrlShortenService {
     /*
      *  30분마다 만료된 URL 삭제
      */
-    @Scheduled(fixedRate = 1800000)
+    @Scheduled(fixedRate = 1_800_000)
     private void startCleanupTask() {
         LocalDateTime now = LocalDateTime.now();
         shortenUrls.entrySet().removeIf(entry -> entry.getValue().isExpired());
@@ -80,7 +80,11 @@ public class UrlShortenService {
 
     public String getOriginalUrl(String shortUrl) {
         ExpiringUrl expiringUrl = shortenUrls.get(shortUrl);
-        if (expiringUrl == null || expiringUrl.isExpired()) {
+        if (expiringUrl == null ) {
+            shortenUrls.remove(shortUrl);
+            throw BusinessExceptionGenerator.createBusinessException(ErrorCode.DB002);
+        }
+        if (expiringUrl.isExpired()){
             shortenUrls.remove(shortUrl);
             throw BusinessExceptionGenerator.createBusinessException(ErrorCode.DB002);
         }
