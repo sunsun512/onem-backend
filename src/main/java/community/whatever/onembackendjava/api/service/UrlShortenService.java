@@ -82,7 +82,7 @@ public class UrlShortenService {
         ExpiringUrl expiringUrl = shortenUrls.get(shortUrl);
         if (expiringUrl == null || expiringUrl.isExpired()) {
             shortenUrls.remove(shortUrl);
-            return null;
+            throw BusinessExceptionGenerator.createBusinessException(ErrorCode.DB002);
         }
         return expiringUrl.getOriginalUrl();
     }
