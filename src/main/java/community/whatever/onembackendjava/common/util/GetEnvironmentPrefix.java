@@ -20,13 +20,13 @@ public class GetEnvironmentPrefix {
     /*
      * 환경에 따른 prefix를 결정합니다.
      */
-    public static String determinePrefix(String environment) {
-        switch (environment.toLowerCase()) {
-            case "development": return "dev";
-            case "staging": return "stg";
-            case "production": return "prd";
-            default: throw new IllegalArgumentException("지원하지 않는 환경: " + environment);
-        }
-    }
+public static String determinePrefix(String environment) {
+    return switch (environment.toLowerCase()) {
+        case "development" -> "dev";
+        case "staging" -> "stg";
+        case "production" -> "prd";
+        default -> throw new IllegalArgumentException("지원하지 않는 환경: " + environment);
+    };
+}
 
 }
