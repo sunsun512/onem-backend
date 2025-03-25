@@ -8,6 +8,7 @@ import community.whatever.onembackendjava.common.error.model.ErrorCode;
 import community.whatever.onembackendjava.common.util.GetEnvironmentPrefix;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -23,6 +24,8 @@ import java.util.regex.Pattern;
 public class UrlShortenService {
 
     private final BlockedDomainInterface blockedDomainInterface;
+    private final GetEnvironmentPrefix getEnvironmentPrefix;
+
     private static final String UrlRegex = "https?://(?:www\\.)?[a-zA-Z0-9./]+";
     private static final Pattern URL_PATTERN = Pattern.compile(UrlRegex);
 
@@ -94,8 +97,7 @@ public class UrlShortenService {
     }
 
     public String getEnvPrefixKey(String shortKey) {
-
-        return GetEnvironmentPrefix.getEnvPrefix() + shortKey;
+        return getEnvironmentPrefix.getEnvPrefix() + shortKey;
     }
 
 }
